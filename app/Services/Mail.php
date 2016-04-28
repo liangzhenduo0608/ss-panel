@@ -6,11 +6,11 @@ namespace App\Services;
  * Mail Service
  */
 
-use Smarty;
-use App\Services\Logger;
+use App\Services\Mail\File;
 use App\Services\Mail\Mailgun;
-use App\Services\Mail\Smtp;
 use App\Services\Mail\Ses;
+use App\Services\Mail\Smtp;
+use Smarty;
 
 
 class Mail
@@ -28,6 +28,8 @@ class Mail
                 return new Ses();
             case "smtp":
                 return new Smtp();
+            case "file":
+                return new File();
             default:
                 // @TODO default action
         }
@@ -62,7 +64,7 @@ class Mail
      * @param $file
      * @return bool|void
      */
-    public static function send($to, $subject, $template, $ary, $file)
+    public static function send($to, $subject, $template, $ary = [], $file = [])
     {
         $text = self::genHtml($template, $ary);
         Logger::debug($text);

@@ -13,18 +13,22 @@ class Mu
 {
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, $next)
     {
+        if(Helper::isTesting()){
+            $response = $next($request, $response);
+            return $response;
+        }
         $key = Helper::getMuKeyFromReq($request);
         if ($key == null) {
             $res['ret'] = 0;
             $res['msg'] = "key is null";
-            $response->getBody()->write(json_encode($res));
-            return $response;
+            $newResponse = $response->withJson($res,401);
+            return $newResponse;
         }
         if ($key != Config::get('muKey')) {
             $res['ret'] = 0;
             $res['msg'] = "token is  invalid";
-            $response->getBody()->write(json_encode($res));
-            return $response;
+            $newResponse = $response->withJson($res,401);
+            return $newResponse;
         }
         $response = $next($request, $response);
         return $response;

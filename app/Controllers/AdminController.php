@@ -9,16 +9,16 @@ use App\Services\Analytics, App\Services\DbConfig;
 /**
  *  Admin Controller
  */
-class AdminController extends BaseController
+class AdminController extends UserController
 {
 
-    public function index()
+    public function index($request, $response, $args)
     {
         $sts = new Analytics();
         return $this->view()->assign('sts', $sts)->display('admin/index.tpl');
     }
 
-    public function invite()
+    public function invite($request, $response, $args)
     {
         $codes = InviteCode::where('user_id', '=', '0')->get();
         return $this->view()->assign('codes', $codes)->display('admin/invite.tpl');

@@ -4,8 +4,9 @@ namespace App\Utils;
 
 use App\Models\User;
 use App\Services\Config;
-use Ramsey\Uuid\Uuid;
+use DateTime;
 use Ramsey\Uuid\Exception\UnsatisfiedDependencyException;
+use Ramsey\Uuid\Uuid;
 
 class Tools
 {
@@ -29,16 +30,23 @@ class Tools
         }
     }
 
-    static function toMB($traffic)
+
+    public static function toMB($traffic)
     {
         $mb = 1048576;
         return $traffic * $mb;
     }
 
-    static function toGB($traffic)
+    public static function toGB($traffic)
     {
         $gb = 1048576 * 1024;
         return $traffic * $gb;
+    }
+
+    public static function flowToGB($traffic)
+    {
+        $gb = 1048576 * 1024;
+        return $traffic / $gb;
     }
 
     //获取随机字符串
@@ -63,6 +71,17 @@ class Tools
     public static function toDateTime($time)
     {
         return date('Y-m-d H:i:s', $time);
+    }
+
+    /**
+     * @param $seconds
+     * @return mixed
+     */
+    public static function secondsToTime($seconds)
+    {
+        $dtF = new DateTime("@0");
+        $dtT = new DateTime("@$seconds");
+        return $dtF->diff($dtT)->format('%a 天, %h 小时, %i 分 and %s 秒');
     }
 
     // check html
@@ -144,7 +163,7 @@ class Tools
 
     public static function getLastPort()
     {
-        $user = User::orderBy('id', 'desc')->first();
+        $user = User::orderBy('port', 'desc')->first();
         if ($user == null) {
             return 1024; // @todo
         }

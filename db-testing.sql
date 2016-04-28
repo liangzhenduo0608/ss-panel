@@ -1,5 +1,6 @@
+
 SET NAMES utf8;
-SET time_zone = '+08:00';
+SET time_zone = '+00:00';
 SET foreign_key_checks = 0;
 SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 
@@ -9,7 +10,7 @@ CREATE TABLE `sp_config` (
   `key` varchar(128) NOT NULL,
   `value` text NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `updated_at` timestamp NOT NULL DEFAULT '2015-11-01 00:00:00',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -24,13 +25,28 @@ CREATE TABLE `sp_log` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
+DROP TABLE IF EXISTS `ss_chg_code`;
+CREATE TABLE `ss_chg_code` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `code` varchar(128) NOT NULL,
+  `time` int(11) NOT NULL,
+  `traffic` bigint(20) NOT NULL,
+  `tag` varchar(64) NOT NULL,
+  `add_time` int(11) NOT NULL,
+  `status` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `use_time` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
 DROP TABLE IF EXISTS `ss_invite_code`;
 CREATE TABLE `ss_invite_code` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `code` varchar(128) NOT NULL,
   `user_id` int(11) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `updated_at` timestamp NOT NULL DEFAULT '2015-11-01 00:00:00',
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -51,6 +67,19 @@ CREATE TABLE `ss_node` (
   `sort` int(3) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO `ss_node` (`id`, `name`, `type`, `server`, `method`, `custom_method`, `traffic_rate`, `info`, `status`, `offset`, `sort`) VALUES
+(1,	'name3',	1,	'server',	'rc4',	1,	0.5,	'info',	'ok',	0,	1);
+
+DROP TABLE IF EXISTS `ss_node_info_log`;
+CREATE TABLE `ss_node_info_log` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `node_id` int(11) NOT NULL,
+  `uptime` float NOT NULL,
+  `load` varchar(32) NOT NULL,
+  `log_time` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 DROP TABLE IF EXISTS `ss_node_online_log`;
@@ -100,9 +129,13 @@ CREATE TABLE `user` (
   `method` varchar(64) NOT NULL DEFAULT 'rc4-md5',
   `is_email_verify` tinyint(4) NOT NULL DEFAULT '0',
   `reg_ip` varchar(128) NOT NULL DEFAULT '127.0.0.1',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `email` (`email`),
+  UNIQUE KEY `port` (`port`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+INSERT INTO `user` (`id`, `user_name`, `email`, `pass`, `passwd`, `t`, `u`, `d`, `transfer_enable`, `port`, `switch`, `enable`, `type`, `last_get_gift_time`, `last_check_in_time`, `last_rest_pass_time`, `reg_date`, `invite_num`, `is_admin`, `ref_by`, `expire_time`, `method`, `is_email_verify`, `reg_ip`) VALUES
+(1,	'user',	'sp3@sspanel.dev',	'9003d1df225b4d3820015070385194c8',	'123gxopp',	1460651176,	0,	0,	21474836480,	21567,	1,	1,	7,	0,	1460209591,	0,	'2016-04-23 16:00:00',	46,	1,	0,	1456593755,	'rc4-md5',	0,	'127.0.0.1');
 
 DROP TABLE IF EXISTS `user_token`;
 CREATE TABLE `user_token` (
@@ -127,3 +160,7 @@ CREATE TABLE `user_traffic_log` (
   `log_time` int(11) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `user_traffic_log` (`id`, `user_id`, `u`, `d`, `node_id`, `rate`, `traffic`, `log_time`) VALUES
+(105,	1,	10255,	10255,	1,	1,	'1MB',	1111111111);
+

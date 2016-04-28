@@ -1,13 +1,12 @@
 <?php
 
-use Slim\App;
-use Slim\Container;
 use App\Controllers;
-use App\Middleware\Auth;
-use App\Middleware\Guest;
 use App\Middleware\Admin;
 use App\Middleware\Api;
+use App\Middleware\Auth;
+use App\Middleware\Guest;
 use App\Middleware\Mu;
+use Slim\App;
 use Zeuxisoo\Whoops\Provider\Slim\WhoopsMiddleware;
 
 /***
@@ -19,17 +18,9 @@ $debug = false;
 if (defined("DEBUG")) {
     $debug = true;
 }
-/***
- * $configuration = [
- * 'settings' => [
- * 'displayErrorDetails' => $debug,
- * ]
- * ];
- * $c = new Container($configuration);
- ***/
 
 // Make a Slim App
-// $app = new App($c);
+// $app = new App($c)
 $app = new App([
     'settings' => [
         'debug' => $debug,
@@ -108,6 +99,10 @@ $app->group('/admin', function () {
     $this->delete('/user/{id}', 'App\Controllers\Admin\UserController:delete');
     $this->get('/user/{id}/delete', 'App\Controllers\Admin\UserController:deleteGet');
 
+    // Test
+    $this->get('/test/sendmail', 'App\Controllers\Admin\TestController:sendMail');
+    $this->post('/test/sendmail', 'App\Controllers\Admin\TestController:sendMailPost');
+
     $this->get('/profile', 'App\Controllers\AdminController:profile');
     $this->get('/invite', 'App\Controllers\AdminController:invite');
     $this->post('/invite', 'App\Controllers\AdminController:addInvite');
@@ -128,6 +123,7 @@ $app->group('/mu', function () {
     $this->get('/users', 'App\Controllers\Mu\UserController:index');
     $this->post('/users/{id}/traffic', 'App\Controllers\Mu\UserController:addTraffic');
     $this->post('/nodes/{id}/online_count', 'App\Controllers\Mu\NodeController:onlineUserLog');
+    $this->post('/nodes/{id}/info', 'App\Controllers\Mu\NodeController:info');
 })->add(new Mu());
 
 // res
@@ -135,6 +131,6 @@ $app->group('/res', function () {
     $this->get('/captcha/{id}', 'App\Controllers\ResController:captcha');
 });
 
-// Run Slim Routes for App
-$app->run();
+return $app;
+
 

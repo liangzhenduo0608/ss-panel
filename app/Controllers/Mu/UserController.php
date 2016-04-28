@@ -3,9 +3,12 @@
 namespace App\Controllers\Mu;
 
 use App\Controllers\BaseController;
-use App\Models\Node, App\Models\TrafficLog, App\Models\User;
+use App\Models\Node;
+use App\Models\TrafficLog;
+use App\Models\User;
+use App\Services\Config;
+use App\Services\Logger;
 use App\Storage\Dynamodb\TrafficLog as DynamoTrafficLog;
-use App\Services\Config, App\Services\Logger;
 use App\Utils\Tools;
 
 class UserController extends BaseController
@@ -13,11 +16,11 @@ class UserController extends BaseController
     // User List
     public function index($request, $response, $args)
     {
-        $user = User::all();
+        $users = User::all();
         $res = [
             "ret" => 1,
             "msg" => "ok",
-            "data" => $user
+            "data" => $users
         ];
         return $this->echoJson($response, $res);
     }
